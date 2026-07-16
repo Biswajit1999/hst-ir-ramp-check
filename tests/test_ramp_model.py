@@ -1,6 +1,6 @@
 """Synthetic injection-recovery validation gate for ramp fitting.
 
-Per docs/VALIDATION_CONTRACT.md and the CLAUDE_TASK.md stop condition: if
+Per docs/VALIDATION_CONTRACT.md and the docs/VALIDATION_CONTRACT.md stop condition: if
 this fails, the pipeline must not be used to interpret real IMA data as
 validated. Thresholds were calibrated empirically across 15 independent
 noise realizations at rate=20 e-/s, curvature=0.0003, read_noise=5 e-/read

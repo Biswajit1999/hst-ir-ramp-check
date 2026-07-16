@@ -159,12 +159,12 @@ Same command sequence as projects 1–2; write `LOCAL_COMPLETION_REPORT.md`.
 - IMA file structure is a long-standated, well-documented WFC3 convention (lower risk
   than Euclid's brand-new 2025 format), but `ima_io.py` still validates defensively
   and raises `DataSchemaError` rather than assuming silently.
-- Per `CLAUDE_TASK.md` stop conditions: if synthetic injection-recovery fails, stop
+- Per `docs/VALIDATION_CONTRACT.md` stop conditions: if synthetic injection-recovery fails, stop
   and document rather than proceeding to real IMA data.
 
 ## 8. Non-negotiables carried forward
 
-No `git commit`/`push`/remote creation. No Claude/Anthropic/AI attribution. Biswajit
+No `git commit`/`push`/remote creation. Biswajit
 Jana remains sole author in `CITATION.cff`. No fabricated data, benchmarks, or
 citation metadata. Real-data download requires explicit operator authorization in
 chat before execution.
