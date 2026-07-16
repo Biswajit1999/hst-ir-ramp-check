@@ -1,0 +1,9 @@
+{
+  "figure": "fig05_injection_recovery",
+  "data_kind": "synthetic_validation_gate",
+  "sample_size": 5,
+  "units": "dimensionless",
+  "git_commit": "LOCAL_UNCOMMITTED",
+  "config_sha256": "fabd4b12604f63bf5c4d23e04522710bc4bd89d56eb5229df628fe14eec604c8",
+  "package_version": "0.1.0"
+}

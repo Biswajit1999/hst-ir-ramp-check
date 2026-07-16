@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+title: "HST WFC3/IR Up-the-Ramp Linearity Audit"
+type: software
+authors:
+  - family-names: Jana
+    given-names: Biswajit
+version: 0.1.0
+date-released: 2026-07-13
+repository-code: "https://github.com/Biswajit1999/hst-ir-ramp-check"
+license: BSD-3-Clause

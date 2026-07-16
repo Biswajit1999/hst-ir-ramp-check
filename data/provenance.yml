@@ -1,0 +1,19 @@
+project_title: "HST WFC3/IR Up-the-Ramp Linearity Audit"
+repository: "hst-wfc3ir-ramp-linearity-audit"
+author: "Biswajit Jana"
+data_mode: "real public HST WFC3/IR IMA/FLT products"
+created_utc: "2026-07-13T09:46:17.595411+00:00"
+
+source_products: []
+# Each entry must contain:
+# product_id, source, source_url, retrieved_utc, sha256,
+# file_size_bytes, licence_or_terms, selection_reason
+
+derivation:
+  configuration_file: config/analysis.yml
+  configuration_sha256: TODO_AFTER_IMPLEMENTATION
+  software_commit: LOCAL_UNCOMMITTED
+  scripts: []
+
+assumptions: []
+warnings: []

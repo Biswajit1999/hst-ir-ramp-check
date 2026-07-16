@@ -1,0 +1,47 @@
+% Verify all bibliographic metadata before public release.
+
+@article{Baggett2019,
+  author  = {Baggett, S. and Wfc3 Team},
+  title   = {The Wide Field Camera 3 on the Hubble Space Telescope: Instrument Overview},
+  journal = {Space Science Reviews},
+  year    = {2019},
+  doi     = {10.1007/s11214-019-0592-1},
+  note    = {TODO\_VERIFY: DOI does not resolve (404 via doi.org, link.springer.com,
+             and the CrossRef API as of the verification date in
+             IMPLEMENTATION\_PLAN.md). Metadata reproduced from the source project
+             pack; not independently confirmable against a primary source. Retained
+             rather than deleted, since it may be a real paper with an incorrect
+             DOI in the pack. Do not treat as verified.}
+}
+
+@article{Huynh2026NonlinearityWFC3IR,
+  author  = {Huynh, K. and Bajaj, V. and Marinelli, A. and Mack, J. and Shenoy, S. and Grogin, N.},
+  title   = {Testing and Validation of the Updated Pixel-Based Non-Linearity
+             Calibration File for {WFC3/IR}},
+  journal = {WFC3 Instrument Science Report 2025-09},
+  year    = {2026},
+  eprint  = {2602.12110},
+  archivePrefix = {arXiv},
+  note    = {Verified against the arXiv abstract page. Directly on-topic
+             (WFC3/IR count-rate nonlinearity calibration); independently confirmed
+             replacement/supplement for the unverifiable Baggett (2019) citation.}
+}
+
+@misc{HstcalSource,
+  author = {{Space Telescope Science Institute}},
+  title  = {hstcal: HST Calibration Pipeline Software (source repository)},
+  year   = {2026},
+  howpublished = {\url{https://github.com/spacetelescope/hstcal}},
+  note   = {Primary source for WFC3/IR data-quality bit definitions
+            (\texttt{pkg/wfc3/include/wf3dq.h}), used directly in
+            \texttt{dq\_masks.py} rather than assumed from memory.}
+}
+
+@misc{WFC3DataHandbook,
+  author = {{Space Telescope Science Institute}},
+  title  = {{WFC3} Data Handbook},
+  year   = {2026},
+  howpublished = {\url{https://hst-docs.stsci.edu/wfc3dhb}},
+  note   = {Institutional documentation for the MULTIACCUM sample sequence and
+            IMA file structure; stable URL, no invented DOI.}
+}

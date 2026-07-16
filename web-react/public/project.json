@@ -1,0 +1,43 @@
+{
+  "title": "HST WFC3/IR Up-the-Ramp Linearity Audit",
+  "repo": "hst-ir-ramp-check",
+  "category": "Infrared detector instrumentation",
+  "status": "BUILD_FIRST",
+  "priority": 9.5,
+  "question": "How does count-rate linearity vary with accumulated fluence, quadrant and data-quality flags in selected WFC3/IR MULTIACCUM exposures?",
+  "gap": "An archive-level verification; not a replacement for calwf3 or a new calibration reference file.",
+  "dataMode": "real public HST WFC3/IR IMA products",
+  "novelty": "An archive-level verification exercise; not a replacement for calwf3 or a new nonlinearity calibration reference file.",
+  "figures": [
+    { "id": "fig01_example_ramp", "label": "Example up-the-ramp" },
+    { "id": "fig02_residual_vs_fluence", "label": "Residual vs fluence" },
+    { "id": "fig03_quadrant_distributions", "label": "Curvature by quadrant" },
+    { "id": "fig04_early_late_comparison", "label": "Early/late read comparison" },
+    { "id": "fig05_injection_recovery", "label": "Injection recovery" },
+    { "id": "fig06_cr_flags_vs_fluence", "label": "CR flags vs fluence" }
+  ],
+  "validationContract": [
+    "synthetic linear ramp",
+    "injected curvature recovery",
+    "robust/weighted regression comparison",
+    "null control (zero injected curvature)",
+    "quadrant/fluence splits"
+  ],
+  "methodology": "Accumulated counts vs. SAMPTIME are extracted per pixel from each MULTIACCUM IMA file's non-destructive reads. A weighted/robust linear fit to the early (low-fluence) reads establishes the expected linear rate; residuals of all reads from that fit reveal growing nonlinearity at high fluence. A separate rate+curvature quadratic fit (internally parameter-normalized to avoid ill-conditioning) estimates the nonlinearity coefficient directly. Data-quality bits (verified against the real spacetelescope/hstcal source) exclude cosmic-ray/saturated/rejected reads from the fits, with exclusion counts reported rather than silently applied. Results are reported per readout quadrant and binned by accumulated fluence.",
+  "assumptions": [
+    "IMA files follow the standard WFC3 MULTIACCUM convention: one (SCI, ERR, DQ, SAMP, TIME) extension quintet per read, EXTVER=1 is the last (deepest) read; ima_io.py raises DataSchemaError rather than assuming this silently if absent.",
+    "Single-pixel apertures (aperture_radius=0) are used by default; aperture summing rescales the fitted curvature coefficient by approximately 1/N_pixels and is documented as a known limitation rather than corrected for.",
+    "WFC3/IR data-quality bit definitions (HOTPIX=16, SPIKE=1024, SATPIXEL=256, DATAREJECT=8192, HIGH_CURVATURE=16384, etc.) were verified directly against the real spacetelescope/hstcal source rather than assumed from memory."
+  ],
+  "limitations": [
+    "An archive-level verification exercise, not a replacement for calwf3 or a new nonlinearity calibration reference file.",
+    "Aperture-summed curvature values are not directly comparable to single-pixel curvature values without rescaling by approximately 1/N_pixels.",
+    "The Baggett (2019) WFC3 instrument review citation in the source project pack could not be independently verified (DOI does not resolve); retained with a TODO_VERIFY note rather than deleted or re-invented, alongside a verified, on-topic replacement (arXiv:2602.12110).",
+    "reports/report.tex could not be compiled to PDF in this environment (no local LaTeX toolchain); only structural completeness was verified."
+  ],
+  "citation": {
+    "author": "Biswajit Jana",
+    "license": "BSD-3-Clause (original code); mission/archive products retain their original terms",
+    "repository": "https://github.com/Biswajit1999/hst-ir-ramp-check"
+  }
+}

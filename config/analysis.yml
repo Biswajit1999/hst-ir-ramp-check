@@ -1,0 +1,28 @@
+project:
+  title: "HST WFC3/IR Up-the-Ramp Linearity Audit"
+  repository: "hst-wfc3ir-ramp-linearity-audit"
+  author: "Biswajit Jana"
+  curation_status: "BUILD_FIRST"
+  priority: 9.5
+
+execution:
+  seed: 20260713
+  output_directory: results
+  overwrite: false
+  fail_on_warning: false
+
+input:
+  data_mode: "real public HST WFC3/IR IMA/FLT products"
+  manifest: data/manifest.csv
+  raw_directory: data/raw
+  example_directory: data/example
+
+validation:
+  minimum_sample_size: 30
+  bootstrap_resamples: 1000
+  confidence_level: 0.95
+
+provenance:
+  record_environment: true
+  record_git_commit: true
+  verify_checksums: true
