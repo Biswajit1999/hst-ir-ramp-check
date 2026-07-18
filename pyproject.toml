@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "hst-ir-ramp-check"
 version = "0.1.0"
 description = "Publication-grade computational science starter repository."
+authors = [{ name = "Biswajit Jana", email = "biswajitj998@gmail.com" }]
 requires-python = ">=3.11,<3.13"
 dependencies = [
   "numpy==1.26.4",
@@ -15,7 +16,8 @@ dependencies = [
   "pyyaml==6.0.1",
   "astropy==6.1.0",
   "astroquery==0.4.7",
-  "photutils==1.13.0"
+  "photutils==1.13.0",
+  "SciencePlots==2.2.2"
 ]
 
 [project.optional-dependencies]
@@ -42,5 +44,5 @@ target-version = "py311"
 python_version = "3.11"
 
 [[tool.mypy.overrides]]
-module = ["astropy.*", "astroquery.*", "photutils.*", "scipy.*"]
+module = ["astropy.*", "astroquery.*", "photutils.*", "scienceplots.*", "scipy.*"]
 ignore_missing_imports = true
