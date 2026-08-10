@@ -58,7 +58,7 @@ All real inputs require product IDs, retrieval times, checksums, source terms an
 - An archive-level verification exercise, not a replacement for calwf3 or a new nonlinearity calibration reference file.
 - The TR readout quadrant produced zero successful measurements in this specific 3-file sample; the per-quadrant result is incomplete for that quadrant.
 - The real sample (3 IMA files, 39 usable pixel fits) is a bounded first-release check, not a survey-scale characterization.
-- Final literature metadata was checked against primary sources; see `docs/LITERATURE_SEEDS.md` for any items still marked `TODO_VERIFY`.
+- Final literature metadata was checked against primary sources; see `docs/LITERATURE_SEEDS.md` for any items still marked `VERIFICATION_PENDING`.
 
 ## Author
 
@@ -67,3 +67,7 @@ Biswajit Jana
 ## Licence
 
 BSD-3-Clause for original code. Mission/archive products retain their original terms.
+
+## Research Quality Upgrade
+
+See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer, reference anchors, equations and research boundaries added to this repository.

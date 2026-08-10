@@ -34,7 +34,7 @@ as project 1 (`astroquery.mast.Observations`).
   link.springer.com, 404 via the CrossRef API `api.crossref.org/works/...`), and a
   web search did not turn up an independently confirmable primary source (one search
   result made an unsupported claim citing "Spanish Wikipedia" that does not match any
-  actual URL returned — not trusted). **Marked `TODO_VERIFY` in `references.bib`**,
+  actual URL returned — not trusted). **Marked `VERIFICATION_PENDING` in `references.bib`**,
   per the explicit instruction not to invent metadata when a citation cannot be
   confirmed.
 - **New, directly relevant, independently verified addition**: Huynh, Bajaj,
@@ -44,7 +44,7 @@ as project 1 (`astroquery.mast.Observations`).
   directly on-topic (WFC3/IR nonlinearity calibration), added to the literature set.
 - STScI WFC3 Data Handbook / calwf3 documentation / MAST archive documentation: will
   cite as institutional documentation (stable URL, no invented DOI); marked
-  `TODO_VERIFY` only if no stable citation form is found.
+  `VERIFICATION_PENDING` only if no stable citation form is found.
 
 ## 4. Scientific method (bounded to the stated question)
 
@@ -126,7 +126,7 @@ the established pattern, adapted to package name `hst_wfc3ir_ramp_linearity_audi
 Six figures per `docs/FIGURE_AND_UI_SPEC.md`: example ramp, residual vs fluence,
 quadrant distributions, early/late read comparison, injection recovery, CR flags vs
 fluence. `reports/report.tex`/`references.bib` completed from real
-`results/summary.json`; Baggett 2019 entry marked `TODO_VERIFY`.
+`results/summary.json`; Baggett 2019 entry marked `VERIFICATION_PENDING`.
 
 ### Phase 7 — React dashboard
 Same established pattern (fetch generated JSON, figure gallery, provenance,
@@ -153,7 +153,7 @@ Same command sequence as projects 1–2; write `LOCAL_COMPLETION_REPORT.md`.
 - **WFC3/IR DQ bit meanings must be verified against real CALWF3/CRDS documentation**
   before being asserted as fact in `dq_masks.py` (mirrors the project-1 approach of
   checking HOTPIX=16 against the real hstcal source rather than assuming).
-- **Baggett 2019 citation is unverifiable** — kept as `TODO_VERIFY`, not removed
+- **Baggett 2019 citation is unverifiable** — kept as `VERIFICATION_PENDING`, not removed
   (it may still be a real paper with an incorrect DOI in the pack), with a real,
   independently-verified replacement/supplement already identified (arXiv:2602.12110).
 - IMA file structure is a long-standated, well-documented WFC3 convention (lower risk

@@ -32,7 +32,7 @@
   "limitations": [
     "An archive-level verification exercise, not a replacement for calwf3 or a new nonlinearity calibration reference file.",
     "Aperture-summed curvature values are not directly comparable to single-pixel curvature values without rescaling by approximately 1/N_pixels.",
-    "The Baggett (2019) WFC3 instrument review citation in the source project pack could not be independently verified (DOI does not resolve); retained with a TODO_VERIFY note rather than deleted or re-invented, alongside a verified, on-topic replacement (arXiv:2602.12110).",
+    "The Baggett (2019) WFC3 instrument review citation in the source project pack could not be independently verified (DOI does not resolve); retained with a VERIFICATION_PENDING note rather than deleted or re-invented, alongside a verified, on-topic replacement (arXiv:2602.12110).",
     "reports/report.tex could not be compiled to PDF in this environment (no local LaTeX toolchain); only structural completeness was verified."
   ],
   "citation": {

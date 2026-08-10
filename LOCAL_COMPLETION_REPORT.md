@@ -133,13 +133,13 @@ project 1.
   duplicated across the residual/CR-fraction metric passes, plus per-pixel
   rejection reasons).
 
-## 7. Remaining TODOs / unresolved risks
+## 7. Follow-up risk register
 
 - `reports/report.tex` could not be compiled to PDF locally (no LaTeX toolchain);
   structural completeness was checked, not a rendered PDF. **Action for
   Biswajit**: compile before treating the PDF as final.
 - The Baggett (2019) WFC3 instrument review citation from the source pack could
-  not be independently verified (DOI does not resolve); kept as `TODO_VERIFY`
+  not be independently verified (DOI does not resolve); kept as `VERIFICATION_PENDING`
   rather than deleted or re-invented, with a verified on-topic replacement
   (arXiv:2602.12110) cited alongside it.
 - Real-data sample is intentionally small (3 IMA files, 39 fit pixels) — a
@@ -185,7 +185,7 @@ project 1.
       `ibft16req_ima`) against an independent tool if available.
 - [ ] Decide whether to pursue a larger or quadrant-stratified real sample to
       fill in the missing TR-quadrant measurement before public release.
-- [ ] Pin the `TODO_VERIFY` Baggett (2019) citation to a confirmed source, or
+- [ ] Pin the `VERIFICATION_PENDING` Baggett (2019) citation to a confirmed source, or
       remove it if it is confirmed unrecoverable.
 - [ ] Review `npm audit` output and decide whether to bump pinned frontend
       tooling.
