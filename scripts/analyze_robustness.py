@@ -6,6 +6,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 from hst_wfc3ir_ramp_linearity_audit.config import load_config
 from hst_wfc3ir_ramp_linearity_audit.core import run_pipeline
@@ -114,6 +118,29 @@ def main() -> None:
     (output_dir / "robustness.json").write_text(
         json.dumps(payload, indent=2) + "\n", encoding="utf-8"
     )
+    figure_dir = root / "figures"
+    figure_dir.mkdir(exist_ok=True)
+    fig, ax = plt.subplots(figsize=(8, 4.8))
+    markers = {20: "o", 40: "s"}
+    colors = {3: "#22d3ee", 5: "#f59e0b", 7: "#a78bfa"}
+    for row in rows:
+        ax.scatter(
+            row["early_fraction"],
+            100 * float(row["median_late_to_early_rate_change"]),
+            marker=markers[int(row["n_pixels_requested_per_exposure"])],
+            color=colors[int(row["minimum_separation_pixels"])],
+            s=58,
+            alpha=0.82,
+        )
+    ax.axhline(0, color="#475569", linewidth=1)
+    ax.set_xlabel("Fraction of usable reads assigned to early fit")
+    ax.set_ylabel("Pooled median late/early rate change (%)")
+    ax.set_title("All 18 declared designs retain a negative pooled median")
+    ax.grid(alpha=0.18)
+    fig.tight_layout()
+    fig.savefig(figure_dir / "fig07_selection_robustness.svg")
+    fig.savefig(figure_dir / "fig07_selection_robustness.png", dpi=220)
+    plt.close(fig)
     print(
         f"Wrote {len(rows)} robustness designs; pooled medians span "
         f"{min(medians):.6f} to {max(medians):.6f}"

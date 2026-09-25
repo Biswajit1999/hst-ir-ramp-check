@@ -202,10 +202,15 @@ def make_real_figures(out_dir: Path, config_path: Path, manifest_path: Path, raw
     product_ids = sorted({row["product_id"] for row in manifest_rows if row["product_id"].endswith("_ima")})
     first_product = load_ima(raw_dir / f"{product_ids[0]}.fits")
     example_pixel = select_bright_pixels(first_product, n_pixels=1)[0]
-    example_ramp = extract_ramp(first_product, *example_pixel, aperture_radius=1)
+    example_ramp = extract_ramp(first_product, *example_pixel, aperture_radius=0)
 
     excluded = exclusion_mask(example_ramp.dq, DEFAULT_EXCLUSION_MASK)
-    keep = ~excluded
+    keep = (
+        ~excluded
+        & (example_ramp.samptimes > 0)
+        & np.isfinite(example_ramp.uncertainty)
+        & (example_ramp.uncertainty > 0)
+    )
     t_keep, c_keep, u_keep = example_ramp.samptimes[keep], example_ramp.counts[keep], example_ramp.uncertainty[keep]
     n_early = max(3, len(t_keep) // 2)
     weighted = fit_weighted_linear(t_keep[:n_early], c_keep[:n_early], u_keep[:n_early])
@@ -241,19 +246,24 @@ def make_real_figures(out_dir: Path, config_path: Path, manifest_path: Path, raw
     quadrant_curv = {q: [m.curvature for m in result.measurements if m.quadrant == q] for q in quadrants}
     fig, ax = plt.subplots(figsize=(7, 4.5))
     ax.boxplot([quadrant_curv[q] for q in quadrants], tick_labels=quadrants)
-    ax.set_ylabel("Fitted curvature coefficient")
-    ax.set_title(f"Curvature by quadrant (n={len(result.measurements)} total)")
+    ax.set_ylabel("Post-calibration curvature coefficient (1/electron)")
+    ax.set_title(f"Empirical curvature by array quadrant (n={len(result.measurements)} total)")
     path = _save(fig, out_dir, "fig03_quadrant_distributions")
-    _sidecar(path, data_kind=data_kind, sample_size=len(result.measurements), units="dimensionless", config_path=config_path)
+    _sidecar(path, data_kind=data_kind, sample_size=len(result.measurements), units="1/electron", config_path=config_path)
 
     # 4. early/late read comparison
     early_rates, late_rates = [], []
     for product_id in product_ids:
         product = load_ima(raw_dir / f"{product_id}.fits")
         for x, y in select_bright_pixels(product, n_pixels=10):
-            ramp = extract_ramp(product, x, y, aperture_radius=1)
+            ramp = extract_ramp(product, x, y, aperture_radius=0)
             excl = exclusion_mask(ramp.dq, DEFAULT_EXCLUSION_MASK)
-            keep_i = ~excl
+            keep_i = (
+                ~excl
+                & (ramp.samptimes > 0)
+                & np.isfinite(ramp.uncertainty)
+                & (ramp.uncertainty > 0)
+            )
             t_i, c_i, u_i = ramp.samptimes[keep_i], ramp.counts[keep_i], ramp.uncertainty[keep_i]
             if len(t_i) < 6:
                 continue
@@ -272,7 +282,7 @@ def make_real_figures(out_dir: Path, config_path: Path, manifest_path: Path, raw
         ax.plot(early_rates, late_rates, "o", color="tab:purple")
     ax.set_xlabel("Rate from early reads (e-/s)")
     ax.set_ylabel("Rate from late reads (e-/s)")
-    ax.set_title(f"Early vs late read rate comparison (n={len(early_rates)})")
+    ax.set_title(f"Post-calibration early vs late rate comparison (n={len(early_rates)})")
     ax.legend()
     path = _save(fig, out_dir, "fig04_early_late_comparison")
     _sidecar(path, data_kind=data_kind, sample_size=len(early_rates), units="electrons/second", config_path=config_path)

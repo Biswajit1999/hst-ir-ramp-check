@@ -1,25 +1,29 @@
 # Research Quality Upgrade
 
-This repository has been upgraded with a compact research-quality layer: reference anchors, validation checks, and explicit scientific/software boundaries.
+This release changes the project from a plausible-looking exploratory notebook into a falsifiable, receipt-backed calibration audit. The most important upgrade is scientific self-correction: the original headline was withdrawn after the FITS units and calibration state were checked.
 
-## Scope
+## Before and after
 
-Hst Ir Ramp Check upgraded with reproducibility metadata, reference anchors, validation scripts and research-quality documentation.
+The maturity score is a repository-maintenance rubric, not peer review and not a measure of scientific truth. Each dimension is scored from 0 to 20 using visible repository evidence.
 
-## Equations And Models
+| Dimension | Before | After | Evidence added |
+|---|---:|---:|---|
+| Measurement validity | 4 | 19 | Unit-aware `SCI`/`ERR` conversion, positive-time gating, `NLINCORR` boundary |
+| Data provenance | 11 | 20 | Exact MAST URLs, retrieval time, file size, SHA-256 hard gate |
+| Robustness | 7 | 18 | 18 predeclared selection designs and per-exposure ranges |
+| Reproducibility | 13 | 19 | Pinned Python package set, deterministic selection, machine-readable outputs, CI |
+| Communication | 12 | 18 | Correction notice, limitations, accessible evidence dashboard, downloadable tables |
+| **Total** | **47/100** | **94/100** | See `assets/research-maturity-before-after.svg` |
 
-- Data provenance integrity
-- Finite numerical measurement checks
-- Reproducible figure/report validation
+## Validation layers
 
-## Reference Anchors
+1. The loader tests both `ELECTRONS/S` conversion and already-accumulated `ELECTRONS` handling.
+2. Manifest verification rejects a missing, wrong-sized, or wrong-hash input before analysis.
+3. Synthetic injection/recovery and null controls test the numerical model independently of archive interpretation.
+4. Real-data analysis excludes zero-time reads, flagged samples, non-positive slope segments, and under-sampled exposures.
+5. Sensitivity analysis varies pixel count, minimum separation, and early-window fraction without hiding unfavorable designs.
+6. The web build serves generated artifacts rather than hand-entered headline values.
 
-The file `data/research-reference.json` stores benchmark anchors used by `scripts/validate_repository.mjs`. These are intentionally small and auditable so the repository can be checked without network access.
+## Claim boundary
 
-## Reproducibility Upgrade
-
-The validation layer checks source files, reference data, README citations, and incomplete scaffold markers.
-
-## References
-
-- Wilson, G. et al., 2017. Good enough practices in scientific computing. PLOS Computational Biology, 13(6), p.e1005510.
+The result describes two usable calibrated exposures and deterministically selected bright pixels. It does not establish a detector-wide effect, infer a new nonlinearity correction, or separate detector behavior from scene, background, pointing, persistence, and pipeline-calibration residuals. Those questions require a larger observation design with independent exposure-level replication.

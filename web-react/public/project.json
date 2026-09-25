@@ -1,38 +1,41 @@
 {
-  "title": "HST WFC3/IR Up-the-Ramp Linearity Audit",
+  "title": "HST WFC3/IR Calibrated Ramp-Stability Audit",
   "repo": "hst-ir-ramp-check",
   "category": "Infrared detector instrumentation",
   "status": "BUILD_FIRST",
   "priority": 9.5,
-  "question": "How does count-rate linearity vary with accumulated fluence, quadrant and data-quality flags in selected WFC3/IR MULTIACCUM exposures?",
-  "gap": "An archive-level verification; not a replacement for calwf3 or a new calibration reference file.",
+  "question": "After reconstructing accumulated electrons from UNITCORR-complete IMA count rates, is the residual late-versus-early ramp drift stable under declared pixel-selection choices?",
+  "gap": "A correction and robustness audit of calibrated archive products; not an independent detector nonlinearity calibration.",
   "dataMode": "real public HST WFC3/IR IMA products",
-  "novelty": "An archive-level verification exercise; not a replacement for calwf3 or a new nonlinearity calibration reference file.",
+  "novelty": "The original analysis treated ELECTRONS/S arrays as accumulated electrons. This release repairs the units and reframes the output as residual post-calibration ramp stability because NLINCORR is already COMPLETE.",
   "figures": [
     { "id": "fig01_example_ramp", "label": "Example up-the-ramp" },
     { "id": "fig02_residual_vs_fluence", "label": "Residual vs fluence" },
     { "id": "fig03_quadrant_distributions", "label": "Curvature by quadrant" },
     { "id": "fig04_early_late_comparison", "label": "Early/late read comparison" },
     { "id": "fig05_injection_recovery", "label": "Injection recovery" },
-    { "id": "fig06_cr_flags_vs_fluence", "label": "CR flags vs fluence" }
+    { "id": "fig06_cr_flags_vs_fluence", "label": "CR flags vs fluence" },
+    { "id": "fig07_selection_robustness", "label": "Selection-design robustness" }
   ],
   "validationContract": [
     "synthetic linear ramp",
     "injected curvature recovery",
     "robust/weighted regression comparison",
     "null control (zero injected curvature)",
-    "quadrant/fluence splits"
+    "quadrant/fluence splits",
+    "18 selection and early-window sensitivity designs"
   ],
-  "methodology": "Accumulated counts vs. SAMPTIME are extracted per pixel from each MULTIACCUM IMA file's non-destructive reads. A weighted/robust linear fit to the early (low-fluence) reads establishes the expected linear rate; residuals of all reads from that fit reveal growing nonlinearity at high fluence. A separate rate+curvature quadratic fit (internally parameter-normalized to avoid ill-conditioning) estimates the nonlinearity coefficient directly. Data-quality bits (verified against the real spacetelescope/hstcal source) exclude cosmic-ray/saturated/rejected reads from the fits, with exclusion counts reported rather than silently applied. Results are reported per readout quadrant and binned by accumulated fluence.",
+  "methodology": "Each IMA SCI and ERR plane is read with its BUNIT. ELECTRONS/S arrays are multiplied by the matching TIME.PIXVALUE to reconstruct accumulated electrons before any fit; unknown units fail closed. Exact file size and SHA-256 receipts are verified first. The analysis selects separated, deepest-read DQ-clean single pixels, excludes the zeroth read and flagged reads, and compares disjoint early and late weighted accumulation slopes. Eighteen declared designs cross 20 or 40 requested pixels, 3/5/7-pixel separation, and 0.4/0.5/0.6 early-read fractions. Because UNITCORR and NLINCORR are COMPLETE, the output is interpreted only as residual post-calibration ramp drift.",
   "assumptions": [
     "IMA files follow the standard WFC3 MULTIACCUM convention: one (SCI, ERR, DQ, SAMP, TIME) extension quintet per read, EXTVER=1 is the last (deepest) read; ima_io.py raises DataSchemaError rather than assuming this silently if absent.",
-    "Single-pixel apertures (aperture_radius=0) are used by default; aperture summing rescales the fitted curvature coefficient by approximately 1/N_pixels and is documented as a known limitation rather than corrected for.",
+    "Single-pixel apertures and explicit centre separation avoid the overlapping 3x3 measurements used by the earlier release.",
     "WFC3/IR data-quality bit definitions (HOTPIX=16, SPIKE=1024, SATPIXEL=256, DATAREJECT=8192, HIGH_CURVATURE=16384, etc.) were verified directly against the real spacetelescope/hstcal source rather than assumed from memory."
   ],
   "limitations": [
-    "An archive-level verification exercise, not a replacement for calwf3 or a new nonlinearity calibration reference file.",
-    "Aperture-summed curvature values are not directly comparable to single-pixel curvature values without rescaling by approximately 1/N_pixels.",
-    "The Baggett (2019) WFC3 instrument review citation in the source project pack could not be independently verified (DOI does not resolve); retained with a VERIFICATION_PENDING note rather than deleted or re-invented, alongside a verified, on-topic replacement (arXiv:2602.12110).",
+    "Only two of three selected exposures have at least six positive-time reads; this cannot support a population-level interval.",
+    "The IMA files are already corrected by calwf3 with NLINCORR=COMPLETE. Residual drift cannot be identified uniquely with detector nonlinearity and may include scene, pointing, persistence, background, or other calibration effects.",
+    "The selected bright pixels are deterministic descriptive samples, not independent draws from the WFC3/IR detector population.",
+    "This release relies on official STScI WFC3 data-structure and calibration documentation for the unit and calibration-state interpretation; it does not claim a literature-calibrated detector model.",
     "reports/report.tex could not be compiled to PDF in this environment (no local LaTeX toolchain); only structural completeness was verified."
   ],
   "citation": {

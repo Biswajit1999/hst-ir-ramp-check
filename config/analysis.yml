@@ -1,6 +1,6 @@
 project:
-  title: "HST WFC3/IR Up-the-Ramp Linearity Audit"
-  repository: "hst-wfc3ir-ramp-linearity-audit"
+  title: "HST WFC3/IR Calibrated Ramp-Stability Audit"
+  repository: "hst-ir-ramp-check"
   author: "Biswajit Jana"
   curation_status: "BUILD_FIRST"
   priority: 9.5
@@ -12,7 +12,7 @@ execution:
   fail_on_warning: false
 
 input:
-  data_mode: "real public HST WFC3/IR IMA/FLT products"
+  data_mode: "real public calibrated HST WFC3/IR IMA products"
   manifest: data/manifest.csv
   raw_directory: data/raw
   example_directory: data/example

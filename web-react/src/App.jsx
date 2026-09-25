@@ -84,85 +84,24 @@ function Section({ icon: Icon, title, eyebrow, className = '', children }) {
   );
 }
 
-function inverseNormalCDF(p) {
-  if (p <= 0 || p >= 1) return NaN;
-  const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
-  const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
-  const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
-  const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
-  const pLow = 0.02425;
-  const pHigh = 1 - pLow;
-  let q;
-  let r;
-
-  if (p < pLow) {
-    q = Math.sqrt(-2 * Math.log(p));
-    return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5])
-      / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+function RobustnessAudit({ state }) {
+  if (state.loading) return <p className="text-sm text-[#94a3b8]">Loading sensitivity ledger…</p>;
+  if (state.error || !state.data) {
+    return <p className="text-sm text-red-300">Robustness evidence could not be loaded.</p>;
   }
-  if (p <= pHigh) {
-    q = p - 0.5;
-    r = q * q;
-    return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q
-      / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
-  }
-  q = Math.sqrt(-2 * Math.log(1 - p));
-  return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5])
-    / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
-}
-
-function ConfidenceExplorer({ metrics }) {
-  const withCI = useMemo(
-    () => (metrics || []).filter((metric) => metric.uncertainty_low != null && metric.uncertainty_high != null),
-    [metrics],
-  );
-  const [selected, setSelected] = useState(null);
-  const [confidence, setConfidence] = useState(95);
-
-  useEffect(() => {
-    if (!selected && withCI.length > 0) setSelected(withCI[0].name);
-  }, [withCI, selected]);
-
-  if (withCI.length === 0) return null;
-  const metric = withCI.find((item) => item.name === selected) ?? withCI[0];
-  const sigma = ((metric.uncertainty_high - metric.uncertainty_low) / 2) / 1.959963984540054;
-  const zLevel = inverseNormalCDF(0.5 + confidence / 200);
-  const lo = metric.estimate - zLevel * sigma;
-  const hi = metric.estimate + zLevel * sigma;
-
+  const r = state.data;
+  const percent = (value) => `${(100 * value).toFixed(2)}%`;
   return (
-    <Section icon={Beaker} title="Confidence-level explorer" eyebrow="Sensitivity tool">
-      <p className="mb-4 text-xs leading-relaxed text-[#765545]">
-        This client-side approximation rescales the reported 95% bootstrap interval under a normal
-        sampling assumption. It does not rerun the bootstrap; the metric card retains the computed result.
-      </p>
-      {withCI.length > 1 && (
-        <select
-          className="mb-4 w-full rounded-lg border border-[#c89169] bg-white px-3 py-2 text-sm text-[#2b1912]"
-          value={metric.name}
-          onChange={(event) => setSelected(event.target.value)}
-        >
-          {withCI.map((item) => (
-            <option key={item.name} value={item.name}>{item.name.replace(/_/g, ' ')}</option>
-          ))}
-        </select>
-      )}
-      <label className="flex items-center justify-between text-sm text-[#5d4033]">
-        <span>Confidence level</span>
-        <span className="font-mono">{confidence.toFixed(1)}%</span>
-      </label>
-      <input
-        type="range"
-        min="50"
-        max="99.9"
-        step="0.1"
-        value={confidence}
-        onChange={(event) => setConfidence(Number(event.target.value))}
-        className="mt-2 w-full accent-[#a6532c]"
-      />
-      <p className="mt-4 font-mono text-2xl font-semibold text-[#2b1912]">
-        [{lo.toPrecision(4)}, {hi.toPrecision(4)}]
-        <span className="ml-2 text-sm font-normal text-[#765545]">{metric.units}</span>
+    <Section icon={Beaker} title="Selection-design sensitivity" eyebrow="18 predeclared designs">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="evidence-stat"><span>Pooled median range</span><strong>{percent(r.pooled_median_rate_change_range[0])} to {percent(r.pooled_median_rate_change_range[1])}</strong></div>
+        <div className="evidence-stat"><span>Positive pooled medians</span><strong>{r.positive_pooled_designs} / {r.design_count}</strong></div>
+        <div className="evidence-stat"><span>Usable exposures</span><strong>{r.usable_exposures.length} / 3</strong></div>
+        <div className="evidence-stat"><span>Calibration state</span><strong>NLINCORR complete</strong></div>
+      </div>
+      <p className="mt-5 max-w-4xl text-sm leading-7 text-[#cbd5e1]">{r.claim_boundary}</p>
+      <p className="mt-3 text-xs leading-6 text-[#94a3b8]">
+        Excluded: {r.excluded_exposure.product_id} — {r.excluded_exposure.reason}
       </p>
     </Section>
   );
@@ -170,9 +109,9 @@ function ConfidenceExplorer({ metrics }) {
 
 const WARNING_RULES = [
   {
-    matches: (warning) => /only \d+ reads survive DQ exclusion/i.test(warning),
-    title: 'Insufficient DQ-valid reads',
-    description: 'Fit candidates excluded because fewer than four reads remained after required data-quality masking.',
+    matches: (warning) => /only \d+ (reads survive DQ exclusion|positive-time reads|usable positive-time reads)/i.test(warning),
+    title: 'Insufficient usable reads',
+    description: 'Exposure or pixel candidates were excluded when fewer than six positive-time, DQ-valid reads remained.',
     tone: 'quality',
   },
   {
@@ -321,6 +260,7 @@ export default function App() {
   const summary = useJson('./results/summary.json');
   const warnings = useJson('./results/warnings.json');
   const benchmarks = useJson('./results/benchmarks.json');
+  const robustness = useJson('./results/robustness.json');
 
   if (project.loading) {
     return <main className="grid min-h-screen place-items-center bg-[#1c100b] text-[#f4d6b0]">Loading project record…</main>;
@@ -337,7 +277,8 @@ export default function App() {
   const isDemo = summary.data?.data_kind === 'synthetic_smoke_test' || summary.data?.data_kind === 'synthetic_demo';
 
   return (
-    <main className="infrared-page min-h-screen">
+    <main id="main" className="infrared-page min-h-screen">
+      <a className="skip-link" href="#evidence">Skip to research evidence</a>
       <header className="mission-hero relative overflow-hidden border-b border-[#d28a52]/30">
         <div className="hero-orbit" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-5 py-8 md:px-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:py-14">
@@ -369,6 +310,13 @@ export default function App() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+        <section className="correction-banner mb-8" aria-labelledby="correction-title">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em]">Critical unit correction</p>
+          <h2 id="correction-title" className="display-font mt-2 text-2xl font-semibold">The earlier nonlinearity headline was invalidated.</h2>
+          <p className="mt-3 max-w-4xl text-sm leading-7">
+            These calibrated IMA arrays are in ELECTRONS/S, not accumulated electrons. The repaired pipeline multiplies every SCI and ERR plane by its read time before fitting. Because NLINCORR is already COMPLETE, this release reports residual post-calibration ramp drift—not a new detector nonlinearity measurement.
+          </p>
+        </section>
         {isDemo && (
           <div className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-800/30 bg-amber-100 p-4 text-sm text-amber-950">
             <AlertTriangle size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
@@ -377,16 +325,16 @@ export default function App() {
           </div>
         )}
 
-        <section aria-labelledby="metrics-title">
+        <section id="evidence" aria-labelledby="metrics-title">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#a6532c]">Detector ledger</p>
-              <h2 id="metrics-title" className="display-font mt-1 text-3xl font-semibold text-[#2b1912]">Measured outputs</h2>
+              <h2 id="metrics-title" className="display-font mt-1 text-3xl font-semibold text-[#f8fafc]">Corrected evidence ledger</h2>
             </div>
             <p className="font-mono text-xs text-[#765545]">values loaded from results/summary.json</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {summary.data?.metrics?.map((metric, index) => (
+            {summary.data?.metrics?.slice(0, 6).map((metric, index) => (
               <MetricCard key={metric.name} metric={metric} index={index} />
             ))}
             {!summary.data && (
@@ -400,7 +348,7 @@ export default function App() {
         </section>
 
         <div className="mt-8">
-          <ConfidenceExplorer metrics={summary.data?.metrics} />
+          <RobustnessAudit state={robustness} />
         </div>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-[1.65fr_0.75fr] lg:items-start">
@@ -462,6 +410,9 @@ export default function App() {
               <a className="download-link" href="./manifest.csv" download>data/manifest.csv</a>
               <a className="download-link" href="./results/summary.json" download>results/summary.json</a>
               <a className="download-link" href="./results/warnings.json" download>results/warnings.json</a>
+              <a className="download-link" href="./results/measurements.csv" download>results/measurements.csv</a>
+              <a className="download-link" href="./results/robustness.json" download>results/robustness.json</a>
+              <a className="download-link" href="./results/robustness_designs.csv" download>results/robustness_designs.csv</a>
               {benchmarks.data && <a className="download-link" href="./results/benchmarks.json" download>results/benchmarks.json</a>}
             </div>
             <p className="mt-4 text-xs leading-relaxed text-[#765545]">

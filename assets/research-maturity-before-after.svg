@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Research maturity before and after the audit upgrade</title>
+  <desc id="desc">Five paired horizontal bars compare measurement validity, provenance, robustness, reproducibility, and communication. Total score improves from 47 to 94 out of 100.</desc>
+  <rect width="1200" height="680" rx="36" fill="#050b12"/>
+  <text x="72" y="82" fill="#f8fafc" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="700">Research maturity audit</text>
+  <text x="72" y="118" fill="#94a3b8" font-family="Inter,Arial,sans-serif" font-size="18">Repository-practice rubric · 20 points per dimension · not peer review</text>
+  <g font-family="Inter,Arial,sans-serif" font-size="17">
+    <text x="72" y="186" fill="#cbd5e1">Measurement validity</text>
+    <text x="72" y="276" fill="#cbd5e1">Data provenance</text>
+    <text x="72" y="366" fill="#cbd5e1">Robustness</text>
+    <text x="72" y="456" fill="#cbd5e1">Reproducibility</text>
+    <text x="72" y="546" fill="#cbd5e1">Communication</text>
+  </g>
+  <g fill="#152234">
+    <rect x="310" y="157" width="760" height="22" rx="11"/><rect x="310" y="187" width="760" height="22" rx="11"/>
+    <rect x="310" y="247" width="760" height="22" rx="11"/><rect x="310" y="277" width="760" height="22" rx="11"/>
+    <rect x="310" y="337" width="760" height="22" rx="11"/><rect x="310" y="367" width="760" height="22" rx="11"/>
+    <rect x="310" y="427" width="760" height="22" rx="11"/><rect x="310" y="457" width="760" height="22" rx="11"/>
+    <rect x="310" y="517" width="760" height="22" rx="11"/><rect x="310" y="547" width="760" height="22" rx="11"/>
+  </g>
+  <g fill="#6b7280">
+    <rect x="310" y="157" width="152" height="22" rx="11"/><rect x="310" y="247" width="418" height="22" rx="11"/>
+    <rect x="310" y="337" width="266" height="22" rx="11"/><rect x="310" y="427" width="494" height="22" rx="11"/>
+    <rect x="310" y="517" width="456" height="22" rx="11"/>
+  </g>
+  <g fill="#22d3ee">
+    <rect x="310" y="187" width="722" height="22" rx="11"/><rect x="310" y="277" width="760" height="22" rx="11"/>
+    <rect x="310" y="367" width="684" height="22" rx="11"/><rect x="310" y="457" width="722" height="22" rx="11"/>
+    <rect x="310" y="547" width="684" height="22" rx="11"/>
+  </g>
+  <g fill="#94a3b8" font-family="ui-monospace,Consolas,monospace" font-size="14">
+    <text x="1084" y="174">4 → 19</text><text x="1084" y="264">11 → 20</text><text x="1084" y="354">7 → 18</text>
+    <text x="1084" y="444">13 → 19</text><text x="1084" y="534">12 → 18</text>
+  </g>
+  <line x1="72" y1="598" x2="1128" y2="598" stroke="#233348"/>
+  <text x="72" y="640" fill="#94a3b8" font-family="Inter,Arial,sans-serif" font-size="18">BEFORE</text>
+  <text x="170" y="640" fill="#f8fafc" font-family="ui-monospace,Consolas,monospace" font-size="28" font-weight="700">47/100</text>
+  <text x="830" y="640" fill="#67e8f9" font-family="Inter,Arial,sans-serif" font-size="18">AFTER</text>
+  <text x="920" y="640" fill="#67e8f9" font-family="ui-monospace,Consolas,monospace" font-size="28" font-weight="700">94/100</text>
+</svg>

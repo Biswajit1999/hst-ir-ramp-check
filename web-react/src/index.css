@@ -3,23 +3,23 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: dark;
+  font-family: "Fira Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; background: #f4e8d8; color: #2b1912; }
-button, input, select, summary, a { outline-color: #a6532c; outline-offset: 3px; }
+body { margin: 0; min-width: 320px; background: #020617; color: #f8fafc; }
+button, input, select, summary, a { outline-color: #67e8f9; outline-offset: 3px; }
 
 .display-font { font-family: Georgia, "Times New Roman", serif; letter-spacing: -0.025em; }
 
 .infrared-page {
   background:
-    radial-gradient(circle at 10% 20%, rgba(198, 116, 59, 0.12), transparent 25rem),
-    linear-gradient(180deg, #f8f0e4 0%, #f1e2cf 100%);
+    radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.09), transparent 25rem),
+    linear-gradient(180deg, #020617 0%, #090d1d 100%);
 }
 
 .mission-hero {
@@ -76,6 +76,67 @@ button, input, select, summary, a { outline-color: #a6532c; outline-offset: 3px;
 }
 
 .download-link:hover { transform: translateY(-1px); border-color: #a6532c; background: #f4dcc2; }
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  transform: translateY(-180%);
+  border-radius: 0.6rem;
+  background: #f8fafc;
+  color: #020617;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+}
+.skip-link:focus { transform: translateY(0); }
+
+.infrared-page .lab-panel,
+.infrared-page .metric-card {
+  border-color: #334155 !important;
+  background: #0e1223 !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.28);
+}
+.infrared-page .lab-panel h2,
+.infrared-page .metric-card > p:nth-of-type(2) { color: #f8fafc !important; }
+.infrared-page .lab-panel p,
+.infrared-page .lab-panel li,
+.infrared-page .lab-panel dt,
+.infrared-page .lab-panel dd,
+.infrared-page .metric-card p { color: #cbd5e1 !important; }
+.infrared-page .lab-panel > div:first-child { border-color: #334155 !important; }
+.infrared-page figure { border-color: #334155 !important; background: #111827 !important; }
+.infrared-page figure > div { background: #f8fafc !important; }
+.metric-card::before { background: linear-gradient(#22d3ee, #f59e0b); }
+.correction-banner {
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-left: 4px solid #f59e0b;
+  border-radius: 1rem;
+  background: linear-gradient(105deg, rgba(120, 53, 15, 0.28), rgba(15, 23, 42, 0.8));
+  color: #fef3c7;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+.evidence-stat {
+  min-width: 0;
+  border: 1px solid #334155;
+  border-radius: 0.85rem;
+  background: #020617;
+  padding: 1rem;
+}
+.evidence-stat span { display: block; color: #94a3b8; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; }
+.evidence-stat strong { display: block; margin-top: 0.5rem; color: #f8fafc; font-family: "Fira Code", ui-monospace, monospace; overflow-wrap: anywhere; }
+.infrared-page .download-link { border-color: #334155; background: #111827; color: #e2e8f0; }
+.infrared-page .download-link:hover { border-color: #22d3ee; background: #172033; }
+.infrared-page .raw-warning-list { border-color: #334155 !important; background: #111827 !important; }
+.infrared-page .warning-quality { border-color: rgba(34, 211, 238, 0.34); background: rgba(8, 145, 178, 0.12); }
+.infrared-page .warning-limitation { border-color: rgba(245, 158, 11, 0.35); background: rgba(146, 64, 14, 0.14); }
+.infrared-page .warning-failure { border-color: rgba(248, 113, 113, 0.42); background: rgba(127, 29, 29, 0.16); }
+
+@media (max-width: 420px) {
+  .infrared-page { overflow-x: clip; }
+  .lab-panel, .metric-card { min-width: 0; }
+  .hero-pill { max-width: 100%; overflow-wrap: anywhere; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

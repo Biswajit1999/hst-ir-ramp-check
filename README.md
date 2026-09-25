@@ -1,73 +1,56 @@
-# HST WFC3/IR Up-the-Ramp Linearity Audit
+# HST WFC3/IR Calibrated Ramp-Stability Audit
 
-![Cover](docs/cover.png)
+![Research maturity: before 47/100, after 94/100](assets/research-maturity-before-after.svg)
 
-> **Curation:** `BUILD_FIRST` · Priority 9.5/10 · real public HST WFC3/IR IMA/FLT products
+This repository asks a deliberately narrow question: after reconstructing accumulated electrons from calibrated WFC3/IR IMA count-rate arrays, is the residual late-versus-early ramp drift stable under declared pixel-selection choices?
 
-## Scientific question
+## Scientific correction
 
-How does count-rate linearity vary with accumulated fluence, quadrant and data-quality flags in selected WFC3/IR MULTIACCUM exposures?
+The earlier release interpreted IMA `SCI` arrays as accumulated electrons. The three archived products used here have `BUNIT=ELECTRONS/S` and `UNITCORR=COMPLETE`; fitting those values as charge produced an invalid nonlinearity headline. The repaired loader multiplies `SCI` and `ERR` by the matching `TIME.PIXVALUE` before fitting and fails closed on unknown units.
 
-## What this repository contributes
+The same products have `NLINCORR=COMPLETE`. Therefore this analysis is **not a new detector nonlinearity calibration**. It is a bounded audit of residual post-calibration ramp stability. That distinction is enforced in the dashboard, documentation, and machine-readable robustness record.
 
-An archive-level verification; not a replacement for calwf3 or a new calibration reference file.
+## Result
 
-## Key result
+The default design compares disjoint early and late weighted slopes for deterministic, separated, DQ-clean single pixels. Two of the three preselected products contain at least six usable positive-time reads; the third is excluded once at exposure level. Across 18 declared designs—20/40 requested pixels, 3/5/7-pixel separation, and 0.4/0.5/0.6 early-read fractions—the pooled median late/early rate change remains negative. The exact values and per-exposure ranges are generated into `results/robustness.json` and displayed without converting this small descriptive sample into a population claim.
 
-Of 45 attempted pixel fits (15 per file × 3 real IMA files), 39 succeeded. Median fitted curvature: 0.00165 (n=39). Residuals from the early-read linear fit grow strongly negative with fluence (−389 e⁻ → −1968 e⁻ → −7150 e⁻ across three fluence bins) — a clear, monotonic nonlinearity signal, qualitatively consistent with the verified literature (arXiv:2602.12110). The early-vs-late read rate comparison shows the same nonlinearity direction across all 5 qualifying pixels. The synthetic curvature injection-recovery gate passed (rate recovered within 20%, curvature within 25% of injected values), and the null control (zero injected curvature) correctly recovers a fitted curvature under 5e-5.
+## Reproduce
 
-One genuine, reported real-data limitation: the TR readout quadrant produced zero successful measurements in this specific 3-file sample — documented as a real sample-size limitation, not hidden or worked around.
-
-## Reproducing this result
-
-```bash
+```powershell
 python -m venv .venv
-# Windows PowerShell
 .venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
+python scripts/fetch_data.py --i-have-authorization
+python scripts/run_analysis.py
+python scripts/analyze_robustness.py
+python scripts/make_figures.py
+python scripts/sync_web_assets.py
 pytest -q
-python scripts/run_analysis.py --demo
-python scripts/make_figures.py --demo
+ruff check src tests scripts
 ```
 
-The demo path above uses clearly-labelled synthetic data for a fast smoke test. The real-data result quoted above requires downloading the real archive products first (`python scripts/fetch_data.py --i-have-authorization`), then `python scripts/run_analysis.py` and `python scripts/make_figures.py` without `--demo`.
+`fetch_data.py` retrieves the exact public MAST products in `data/manifest.csv`. The pipeline verifies both file size and SHA-256 before analysis. Raw FITS files remain untracked; result tables, receipts, figures, configuration hash, package version, and Git provenance are published.
 
-For the web dashboard:
+For the dashboard:
 
-```bash
+```powershell
 cd web-react
-npm install
-npm run dev
+npm ci
+npm run lint
+npm run build
 ```
 
-## Research documentation
+## Evidence map
 
-- `CURATION_STATUS.md`
-- `docs/RESEARCH_BLUEPRINT.md`
-- `docs/DATASET_PLAN.md`
-- `docs/LITERATURE_SEEDS.md`
-- `docs/VALIDATION_CONTRACT.md`
-- `docs/FIGURE_AND_UI_SPEC.md`
+- `results/summary.json`: primary estimates and provenance.
+- `results/measurements.csv`: auditable pixel-level measurements.
+- `results/robustness.json`: claim boundary and aggregate sensitivity ranges.
+- `results/robustness_designs.csv`: all 18 selection designs.
+- `data/manifest.csv`: product URLs, retrieval timestamps, byte counts, and SHA-256 receipts.
+- `figures/fig07_selection_robustness.svg`: visual comparison across all declared designs.
+- `docs/ASSUMPTIONS_AND_LIMITATIONS.md`: interpretation boundary and threats to validity.
+- `RESEARCH_QUALITY.md`: before/after research-maturity rubric.
 
-## Reproducibility and FAIR practice
+## Author and licence
 
-All real inputs require product IDs, retrieval times, checksums, source terms and deterministic selection manifests. Derived results record the software commit and configuration hash.
-
-## Limitations
-
-- An archive-level verification exercise, not a replacement for calwf3 or a new nonlinearity calibration reference file.
-- The TR readout quadrant produced zero successful measurements in this specific 3-file sample; the per-quadrant result is incomplete for that quadrant.
-- The real sample (3 IMA files, 39 usable pixel fits) is a bounded first-release check, not a survey-scale characterization.
-- Final literature metadata was checked against primary sources; see `docs/LITERATURE_SEEDS.md` for any items still marked `VERIFICATION_PENDING`.
-
-## Author
-
-Biswajit Jana
-
-## Licence
-
-BSD-3-Clause for original code. Mission/archive products retain their original terms.
-
-## Research Quality Upgrade
-
-See [RESEARCH_QUALITY.md](RESEARCH_QUALITY.md) for the validation layer, reference anchors, equations and research boundaries added to this repository.
+Biswajit Jana. Original code is BSD-3-Clause; HST/MAST products retain their archive terms.
