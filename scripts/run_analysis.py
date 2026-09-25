@@ -8,12 +8,14 @@ is not part of this project's pinned dependency set.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import platform
 import sys
 import time
 import tracemalloc
 from pathlib import Path
+from dataclasses import asdict
 
 import numpy as np
 
@@ -112,8 +114,27 @@ def run_real_data(config_path: Path, manifest_path: Path, raw_dir: Path, results
     tracemalloc.stop()
 
     curvatures = [m.curvature for m in result.measurements]
+    rate_changes = [m.late_to_early_rate_change for m in result.measurements]
+    endpoint_residuals = [m.endpoint_fractional_residual for m in result.measurements]
     metrics = [
-        Metric(name="median_curvature", estimate=float(np.median(curvatures)), units="dimensionless", sample_size=len(curvatures)),
+        Metric(
+            name="median_late_to_early_rate_change",
+            estimate=float(np.median(rate_changes)),
+            units="fraction",
+            sample_size=len(rate_changes),
+        ),
+        Metric(
+            name="median_endpoint_fractional_residual",
+            estimate=float(np.median(endpoint_residuals)),
+            units="fraction",
+            sample_size=len(endpoint_residuals),
+        ),
+        Metric(
+            name="median_post_calibration_curvature",
+            estimate=float(np.median(curvatures)),
+            units="1/electron",
+            sample_size=len(curvatures),
+        ),
         Metric(
             name="median_cr_flagged_fraction",
             estimate=float(np.median([m.cr_flagged_read_fraction for m in result.measurements])),
@@ -121,9 +142,19 @@ def run_real_data(config_path: Path, manifest_path: Path, raw_dir: Path, results
             sample_size=len(result.measurements),
         ),
     ]
+    for product_id in sorted({m.product_id for m in result.measurements}):
+        members = [m for m in result.measurements if m.product_id == product_id]
+        metrics.append(
+            Metric(
+                name=f"median_late_to_early_rate_change_{product_id}",
+                estimate=float(np.median([m.late_to_early_rate_change for m in members])),
+                units="fraction",
+                sample_size=len(members),
+            )
+        )
     for quadrant, stats in sorted(result.quadrant_summary.items()):
         metrics.append(
-            Metric(name=f"median_curvature_quadrant_{quadrant}", estimate=stats["median_curvature"], units="dimensionless", sample_size=int(stats["n"]))
+            Metric(name=f"median_curvature_quadrant_{quadrant}", estimate=stats["median_curvature"], units="1/electron", sample_size=int(stats["n"]))
         )
     for label, binning in (("residual", result.residual_by_fluence), ("cr_fraction", result.cr_fraction_by_fluence)):
         for i, b in enumerate(binning.bins):
@@ -145,6 +176,11 @@ def run_real_data(config_path: Path, manifest_path: Path, raw_dir: Path, results
     }
 
     results_dir.mkdir(exist_ok=True)
+    with (results_dir / "measurements.csv").open("w", encoding="utf-8", newline="") as handle:
+        fieldnames = list(asdict(result.measurements[0]).keys())
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(asdict(measurement) for measurement in result.measurements)
     write_summary(
         results_dir / "summary.json",
         project=config.project.title,

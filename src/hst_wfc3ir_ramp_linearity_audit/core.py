@@ -61,8 +61,13 @@ def demo_series(seed: int = 20260713, size: int = 128) -> np.ndarray:
     return rng.normal(loc=0.0, scale=1.0, size=size)
 
 
-def select_bright_pixels(product: IMAProduct, n_pixels: int, edge_margin: int = 5) -> list[tuple[int, int]]:
-    """Deterministically select the brightest interior pixels from the deepest read.
+def select_bright_pixels(
+    product: IMAProduct,
+    n_pixels: int,
+    edge_margin: int = 5,
+    min_separation: int = 5,
+) -> list[tuple[int, int]]:
+    """Select separated, finite, DQ-clean bright pixels from the deepest read.
 
     "Bright" pixels give a usable signal-to-noise ramp to fit; edge pixels are
     excluded by `edge_margin` to keep the extraction aperture in-bounds.
@@ -74,13 +79,26 @@ def select_bright_pixels(product: IMAProduct, n_pixels: int, edge_margin: int = 
         raise InsufficientDataError(f"array too small ({nx}x{ny}) for edge_margin={edge_margin}")
 
     interior = science[edge_margin : ny - edge_margin, edge_margin : nx - edge_margin]
-    flat_indices = np.argsort(interior.ravel())[::-1][:n_pixels]
-    coords = np.column_stack(np.unravel_index(flat_indices, interior.shape))
-    return [(int(x) + edge_margin, int(y) + edge_margin) for y, x in coords]
+    deepest_dq = deepest_read.dq_mask[edge_margin : ny - edge_margin, edge_margin : nx - edge_margin]
+    valid = np.isfinite(interior) & ~exclusion_mask(deepest_dq, DEFAULT_EXCLUSION_MASK)
+    flat_indices = np.flatnonzero(valid.ravel())
+    order = flat_indices[np.argsort(interior.ravel()[flat_indices])[::-1]]
+    selected: list[tuple[int, int]] = []
+    for flat_index in order:
+        y_inner, x_inner = np.unravel_index(flat_index, interior.shape)
+        x, y = int(x_inner) + edge_margin, int(y_inner) + edge_margin
+        if all(max(abs(x - sx), abs(y - sy)) >= min_separation for sx, sy in selected):
+            selected.append((x, y))
+            if len(selected) == n_pixels:
+                break
+    if not selected:
+        raise InsufficientDataError("no finite DQ-clean interior pixels available for selection")
+    return selected
 
 
 @dataclass(frozen=True)
 class PixelMeasurement:
+    product_id: str
     x: int
     y: int
     quadrant: str
@@ -92,9 +110,14 @@ class PixelMeasurement:
     residual_at_max_fluence: float
     cr_flagged_read_fraction: float
     n_excluded_reads: int
+    n_used_reads: int
+    endpoint_fractional_residual: float
+    late_to_early_rate_change: float
 
 
-def _measure_pixel(ramp: ExtractedRamp, early_fraction: float = 0.5) -> PixelMeasurement:
+def _measure_pixel(
+    ramp: ExtractedRamp, product_id: str, early_fraction: float = 0.5
+) -> PixelMeasurement:
     excluded = exclusion_mask(ramp.dq, DEFAULT_EXCLUSION_MASK)
     # The zeroth read has no integration baseline after ZOFFCORR and becomes
     # exactly zero when a UNITCORR-complete count-rate image is converted back
@@ -107,9 +130,9 @@ def _measure_pixel(ramp: ExtractedRamp, early_fraction: float = 0.5) -> PixelMea
     )
     keep = ~excluded & ~structurally_unusable
     n_excluded = int(np.sum(~keep))
-    if np.sum(keep) < 4:
+    if np.sum(keep) < 6:
         raise InsufficientDataError(
-            f"pixel ({ramp.x},{ramp.y}): only {np.sum(keep)} reads survive DQ exclusion, need >=4"
+            f"pixel ({ramp.x},{ramp.y}): only {np.sum(keep)} usable positive-time reads, need >=6"
         )
 
     t, counts, unc = ramp.samptimes[keep], ramp.counts[keep], ramp.uncertainty[keep]
@@ -119,16 +142,34 @@ def _measure_pixel(ramp: ExtractedRamp, early_fraction: float = 0.5) -> PixelMea
     weighted = fit_weighted_linear(t_early, counts_early, unc_early)
     robust = fit_robust_linear(t_early, counts_early)
     curvature_fit = fit_ramp_with_curvature(t, counts)
+    late = fit_weighted_linear(t[-n_early:], counts[-n_early:], unc[-n_early:])
+    if weighted.rate <= 0 or late.rate <= 0:
+        raise InsufficientDataError(
+            f"pixel ({ramp.x},{ramp.y}): non-positive early or late fitted rate"
+        )
 
     residuals = linear_residuals(t, counts, weighted)
     cr_fraction = cosmic_ray_fraction(ramp.dq).fraction
 
+    predicted_final = weighted.rate * t[-1] + weighted.offset
+    endpoint_fractional_residual = (
+        float(residuals[-1] / predicted_final) if predicted_final != 0 else float("nan")
+    )
+    rate_change = (
+        float(late.rate / weighted.rate - 1.0) if weighted.rate != 0 else float("nan")
+    )
+
     return PixelMeasurement(
+        product_id=product_id,
         x=ramp.x, y=ramp.y, quadrant=ramp.quadrant,
         weighted_rate=weighted.rate, robust_rate=robust.rate,
         curvature=curvature_fit.curvature, curvature_rate=curvature_fit.rate,
-        max_fluence=float(weighted.rate * t[-1]), residual_at_max_fluence=float(residuals[-1]),
-        cr_flagged_read_fraction=cr_fraction, n_excluded_reads=n_excluded,
+        max_fluence=float(counts[-1]), residual_at_max_fluence=float(residuals[-1]),
+        cr_flagged_read_fraction=cr_fraction,
+        n_excluded_reads=n_excluded,
+        n_used_reads=int(np.sum(keep)),
+        endpoint_fractional_residual=endpoint_fractional_residual,
+        late_to_early_rate_change=rate_change,
     )
 
 
@@ -146,8 +187,10 @@ def run_pipeline(
     raw_dir: str | Path,
     config: AnalysisConfig,
     n_pixels_per_file: int = 40,
-    aperture_radius: int = 1,
+    aperture_radius: int = 0,
     n_fluence_bins: int = 3,
+    min_separation: int = 5,
+    early_fraction: float = 0.5,
 ) -> PipelineResult:
     """Run the full up-the-ramp linearity audit over real (or synthetic-test) IMA files."""
     raw_dir = Path(raw_dir)
@@ -166,8 +209,17 @@ def run_pipeline(
             all_warnings.append(f"{product_id}: skipped: {exc}")
             continue
 
+        positive_reads = sum(read.samptime > 0 for read in product.reads)
+        if positive_reads < 6:
+            all_warnings.append(
+                f"{product_id}: exposure excluded: only {positive_reads} positive-time reads, need >=6"
+            )
+            continue
+
         try:
-            pixels = select_bright_pixels(product, n_pixels_per_file)
+            pixels = select_bright_pixels(
+                product, n_pixels_per_file, min_separation=min_separation
+            )
         except InsufficientDataError as exc:
             all_warnings.append(f"{product_id}: skipped: {exc}")
             continue
@@ -175,7 +227,7 @@ def run_pipeline(
         for x, y in pixels:
             try:
                 ramp = extract_ramp(product, x, y, aperture_radius=aperture_radius)
-                measurements.append(_measure_pixel(ramp))
+                measurements.append(_measure_pixel(ramp, product_id, early_fraction))
             except (InsufficientDataError, ConvergenceError) as exc:
                 all_warnings.append(f"{product_id} pixel ({x},{y}): skipped: {exc}")
 

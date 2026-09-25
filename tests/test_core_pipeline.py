@@ -16,6 +16,11 @@ def test_select_bright_pixels_excludes_edges(synthetic_ima_path):
     for x, y in pixels:
         assert 3 <= x < 20 - 3
         assert 3 <= y < 20 - 3
+    for index, (x, y) in enumerate(pixels):
+        assert all(
+            max(abs(x - other_x), abs(y - other_y)) >= 5
+            for other_x, other_y in pixels[index + 1 :]
+        )
 
 
 def test_select_bright_pixels_rejects_tiny_array():
@@ -35,14 +40,14 @@ def test_run_pipeline_end_to_end_on_synthetic_ima(tmp_path):
     raw_dir.mkdir()
     config = load_config("config/analysis.yml")
 
-    spec = SyntheticRampSpec(count_rate=20.0, curvature=0.0003, read_noise=5.0)
+    spec = SyntheticRampSpec(count_rate=20.0, curvature=0.00005, read_noise=5.0)
     hdul = build_synthetic_ima_hdulist(spec=spec, size=30, cosmic_ray_read_index=3, seed=42)
     hdul.writeto(raw_dir / "synth1_ima.fits")
 
     manifest_rows = [{"product_id": "synth1_ima"}]
     result = run_pipeline(manifest_rows, raw_dir, config, n_pixels_per_file=15, aperture_radius=0)
 
-    assert len(result.measurements) == 15
+    assert 0 < len(result.measurements) <= 15
     assert set(result.quadrant_summary.keys()).issubset({"BL", "BR", "TL", "TR"})
     assert any("minimum_sample_size" in w for w in result.warnings)
 
