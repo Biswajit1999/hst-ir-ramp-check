@@ -25,6 +25,8 @@ class RampRead:
     science: np.ndarray
     uncertainty: np.ndarray
     dq_mask: np.ndarray
+    source_bunit: str = "ELECTRONS"
+    conversion_to_electrons: str = "none"
 
 
 @dataclass(frozen=True)
@@ -78,13 +80,33 @@ def load_ima(path: str | Path) -> IMAProduct:
                     f"{science.shape} vs {uncertainty.shape} vs {dq.shape}"
                 )
 
+            bunit = str(sci_hdu.header.get("BUNIT", "")).strip().upper()
+            samptime = float(sci_hdu.header["SAMPTIME"])
+            if bunit in {"ELECTRONS/S", "ELECTRONS / S", "ELECTRON/S"}:
+                try:
+                    effective_time = float(hdul["TIME", extver].header.get("PIXVALUE", samptime))
+                except KeyError:
+                    effective_time = samptime
+                science = science * effective_time
+                uncertainty = uncertainty * effective_time
+                conversion = "SCI and ERR multiplied by TIME.PIXVALUE (or SAMPTIME fallback)"
+            elif bunit in {"ELECTRONS", "ELECTRON"}:
+                conversion = "none; source arrays already contain accumulated electrons"
+            else:
+                raise DataSchemaError(
+                    f"{fits_path.name} EXTVER={extver}: unsupported or missing SCI BUNIT={bunit!r}; "
+                    "cannot infer accumulated-electron units"
+                )
+
             reads.append(
                 RampRead(
                     extver=extver,
-                    samptime=float(sci_hdu.header["SAMPTIME"]),
+                    samptime=samptime,
                     science=science,
                     uncertainty=uncertainty,
                     dq_mask=dq,
+                    source_bunit=bunit,
+                    conversion_to_electrons=conversion,
                 )
             )
 
@@ -97,6 +119,11 @@ def load_ima(path: str | Path) -> IMAProduct:
             "detector": str(primary_header.get("DETECTOR", "")),
             "nsamp": nsamp,
             "n_reads_loaded": len(reads),
+            "unitcorr": str(primary_header.get("UNITCORR", "")),
+            "nlincorr": str(primary_header.get("NLINCORR", "")),
+            "cal_ver": str(primary_header.get("CAL_VER", "")),
+            "source_bunits": sorted({read.source_bunit for read in reads}),
+            "science_units_after_load": "ELECTRONS",
         }
         calibration_reference_ids = {
             key: str(primary_header[key]) for key in ("DARKFILE", "NLINFILE", "BPIXTAB") if key in primary_header

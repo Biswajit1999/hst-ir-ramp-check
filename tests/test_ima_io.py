@@ -18,6 +18,38 @@ def test_load_ima_reads_synthetic_fixture(synthetic_ima_path):
     assert samptimes == sorted(samptimes)
     assert product.exposure_metadata["instrument"] == "WFC3"
     assert product.exposure_metadata["detector"] == "IR"
+    assert product.exposure_metadata["science_units_after_load"] == "ELECTRONS"
+    assert product.reads[-1].source_bunit == "ELECTRONS"
+
+
+def test_load_ima_converts_count_rate_arrays_to_accumulated_electrons(tmp_path):
+    spec = SyntheticRampSpec(count_rate=5.0, curvature=0.0, read_noise=0.0)
+    hdul = build_synthetic_ima_hdulist(spec=spec, size=4)
+    expected_deepest = float(hdul["SCI", 1].data[0, 0])
+    hdul[0].header["UNITCORR"] = "COMPLETE"
+    for hdu in hdul:
+        if hdu.name in {"SCI", "ERR"}:
+            time = float(hdu.header["SAMPTIME"])
+            hdu.data = hdu.data / time if time > 0 else hdu.data * 0
+            hdu.header["BUNIT"] = "ELECTRONS/S"
+    path = tmp_path / "rate_ima.fits"
+    hdul.writeto(path)
+
+    product = load_ima(path)
+
+    assert product.exposure_metadata["science_units_after_load"] == "ELECTRONS"
+    assert product.reads[-1].science[0, 0] == pytest.approx(expected_deepest)
+
+
+def test_load_ima_rejects_unknown_science_units(tmp_path):
+    hdul = build_synthetic_ima_hdulist(size=4)
+    for hdu in hdul:
+        if hdu.name == "SCI":
+            hdu.header["BUNIT"] = "BANANAS"
+    path = tmp_path / "unknown_units_ima.fits"
+    hdul.writeto(path)
+    with pytest.raises(DataSchemaError, match="unsupported or missing SCI BUNIT"):
+        load_ima(path)
 
 
 def test_load_ima_missing_file_raises():

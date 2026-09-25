@@ -101,11 +101,41 @@ def read_manifest(manifest_path: str | Path) -> list[dict[str, str]]:
     return rows
 
 
+def verify_manifest_files(
+    rows: list[dict[str, str]], raw_dir: str | Path
+) -> list[dict[str, str | int]]:
+    """Verify every manifest receipt against the exact local archive bytes."""
+    base = Path(raw_dir)
+    receipts: list[dict[str, str | int]] = []
+    for row in rows:
+        product_id = row["product_id"]
+        path = base / f"{product_id}.fits"
+        if not path.is_file():
+            raise ProvenanceError(f"manifest product missing from raw directory: {path}")
+        expected_size = int(row["file_size_bytes"])
+        actual_size = path.stat().st_size
+        if actual_size != expected_size:
+            raise ProvenanceError(
+                f"{product_id}: byte size {actual_size} does not match receipt {expected_size}"
+            )
+        expected_sha = row["sha256"].lower()
+        actual_sha = sha256_file(path)
+        if actual_sha != expected_sha:
+            raise ProvenanceError(
+                f"{product_id}: SHA-256 {actual_sha} does not match receipt {expected_sha}"
+            )
+        receipts.append(
+            {"product_id": product_id, "file_size_bytes": actual_size, "sha256": actual_sha}
+        )
+    return receipts
+
+
 __all__ = [
     "MANIFEST_COLUMNS",
     "ManifestRow",
     "append_manifest_row",
     "read_manifest",
+    "verify_manifest_files",
     "get_git_commit",
     "sha256_bytes",
     "sha256_config",

@@ -96,8 +96,17 @@ class PixelMeasurement:
 
 def _measure_pixel(ramp: ExtractedRamp, early_fraction: float = 0.5) -> PixelMeasurement:
     excluded = exclusion_mask(ramp.dq, DEFAULT_EXCLUSION_MASK)
-    n_excluded = int(np.sum(excluded))
-    keep = ~excluded
+    # The zeroth read has no integration baseline after ZOFFCORR and becomes
+    # exactly zero when a UNITCORR-complete count-rate image is converted back
+    # to accumulated electrons. It is not an independent slope constraint.
+    structurally_unusable = (
+        (ramp.samptimes <= 0)
+        | ~np.isfinite(ramp.counts)
+        | ~np.isfinite(ramp.uncertainty)
+        | (ramp.uncertainty <= 0)
+    )
+    keep = ~excluded & ~structurally_unusable
+    n_excluded = int(np.sum(~keep))
     if np.sum(keep) < 4:
         raise InsufficientDataError(
             f"pixel ({ramp.x},{ramp.y}): only {np.sum(keep)} reads survive DQ exclusion, need >=4"

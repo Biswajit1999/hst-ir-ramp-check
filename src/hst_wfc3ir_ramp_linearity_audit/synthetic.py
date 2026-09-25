@@ -63,6 +63,8 @@ def build_synthetic_ima_hdulist(
     hdus[0].header["INSTRUME"] = "WFC3"
     hdus[0].header["DETECTOR"] = "IR"
     hdus[0].header["NSAMP"] = n_reads
+    hdus[0].header["UNITCORR"] = "OMIT"
+    hdus[0].header["NLINCORR"] = "OMIT"
 
     # EXTVER=1 (last read) has the longest SAMPTIME; EXTVER=NSAMP (first read) has SAMPTIME~0.
     order = np.argsort(-spec.samptimes)  # descending: longest exposure first -> EXTVER=1
@@ -87,6 +89,7 @@ def build_synthetic_ima_hdulist(
         sci_header["EXTVER"] = extver
         sci_header["SAMPTIME"] = float(t)
         sci_header["SAMPNUM"] = int(extver)
+        sci_header["BUNIT"] = "ELECTRONS"
         hdus.append(fits.ImageHDU(data=science.astype(np.float32), header=sci_header, name="SCI", ver=extver))
 
         err_header = sci_header.copy()

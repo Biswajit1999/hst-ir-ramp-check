@@ -22,7 +22,12 @@ from hst_wfc3ir_ramp_linearity_audit.config import load_config
 from hst_wfc3ir_ramp_linearity_audit.core import demo_series, robust_summary, run_pipeline
 from hst_wfc3ir_ramp_linearity_audit.exceptions import ProjectError
 from hst_wfc3ir_ramp_linearity_audit.logging_utils import get_logger
-from hst_wfc3ir_ramp_linearity_audit.provenance import get_git_commit, read_manifest, sha256_config
+from hst_wfc3ir_ramp_linearity_audit.provenance import (
+    get_git_commit,
+    read_manifest,
+    sha256_config,
+    verify_manifest_files,
+)
 from hst_wfc3ir_ramp_linearity_audit.results_io import Metric, write_summary
 
 LOGGER = get_logger(__name__)
@@ -95,6 +100,8 @@ def run_real_data(config_path: Path, manifest_path: Path, raw_dir: Path, results
             "(with explicit operator authorization) before running the real-data pipeline."
         )
 
+    receipts = verify_manifest_files(manifest_rows, raw_dir)
+
     tracemalloc.start()
     start = time.perf_counter()
 
@@ -133,6 +140,8 @@ def run_real_data(config_path: Path, manifest_path: Path, raw_dir: Path, results
         "package_version": __version__,
         "n_ima_files": len({row["product_id"] for row in manifest_rows}),
         "n_pixel_measurements": len(result.measurements),
+        "input_receipts_verified": True,
+        "verified_input_count": len(receipts),
     }
 
     results_dir.mkdir(exist_ok=True)

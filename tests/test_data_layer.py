@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import pytest
+
 from hst_wfc3ir_ramp_linearity_audit.config import load_config
+from hst_wfc3ir_ramp_linearity_audit.exceptions import ProvenanceError
 from hst_wfc3ir_ramp_linearity_audit.provenance import (
     ManifestRow,
     append_manifest_row,
     get_git_commit,
     read_manifest,
     sha256_file,
+    verify_manifest_files,
 )
 
 
@@ -47,3 +51,31 @@ def test_get_git_commit_never_raises(tmp_path):
     result = get_git_commit(tmp_path)
     assert isinstance(result, str)
     assert result != ""
+
+
+def test_verify_manifest_files_accepts_exact_bytes(tmp_path):
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    archive_file = raw_dir / "exact_ima.fits"
+    archive_file.write_bytes(b"exact archive bytes")
+    rows = [{
+        "product_id": "exact_ima",
+        "file_size_bytes": str(archive_file.stat().st_size),
+        "sha256": sha256_file(archive_file),
+    }]
+    receipts = verify_manifest_files(rows, raw_dir)
+    assert receipts[0]["product_id"] == "exact_ima"
+
+
+def test_verify_manifest_files_rejects_changed_bytes(tmp_path):
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    archive_file = raw_dir / "changed_ima.fits"
+    archive_file.write_bytes(b"changed")
+    rows = [{
+        "product_id": "changed_ima",
+        "file_size_bytes": str(archive_file.stat().st_size),
+        "sha256": "0" * 64,
+    }]
+    with pytest.raises(ProvenanceError, match="SHA-256"):
+        verify_manifest_files(rows, raw_dir)
