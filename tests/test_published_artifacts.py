@@ -32,7 +32,8 @@ def test_published_summary_records_release_provenance() -> None:
     assert payload["data_kind"] == "real public calibrated HST WFC3/IR IMA products"
     assert payload["provenance"]["git_commit"] != "LOCAL_UNCOMMITTED"
     assert payload["provenance"]["package_version"] == "1.0.0"
-    assert len(payload["provenance"]["input_receipts"]) == 3
+    assert payload["provenance"]["input_receipts_verified"] is True
+    assert payload["provenance"]["verified_input_count"] == 3
 
 
 def test_dashboard_serves_exact_generated_result_files() -> None:
