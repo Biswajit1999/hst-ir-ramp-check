@@ -1,0 +1,51 @@
+{
+  "question": "Do header-corrected, NLINCORR-complete IMA ramps show a stable residual late-versus-early count-rate change under declared pixel-selection choices?",
+  "design_count": 18,
+  "factors": {
+    "pixels_requested_per_exposure": [
+      20,
+      40
+    ],
+    "minimum_separation_pixels": [
+      3,
+      5,
+      7
+    ],
+    "early_fraction": [
+      0.4,
+      0.5,
+      0.6
+    ],
+    "aperture_radius_pixels": 0
+  },
+  "pooled_median_rate_change_range": [
+    -0.02762346954134498,
+    -0.010740175274715269
+  ],
+  "positive_pooled_designs": 0,
+  "per_exposure_median_rate_change_ranges": {
+    "ibft16req_ima": [
+      -0.03183126769789124,
+      -0.017974756686948368
+    ],
+    "icp910qoq_ima": [
+      -0.02533421244121814,
+      0.025682566871281898
+    ]
+  },
+  "usable_exposures": [
+    "ibft16req_ima",
+    "icp910qoq_ima"
+  ],
+  "excluded_exposure": {
+    "product_id": "icnn06srq_ima",
+    "reason": "Only two positive-time reads; fewer than the six required for disjoint early/late fits."
+  },
+  "calibration_state": {
+    "bunit": "ELECTRONS/S converted to accumulated ELECTRONS with TIME.PIXVALUE",
+    "unitcorr": "COMPLETE",
+    "nlincorr": "COMPLETE",
+    "cal_ver": "3.7.3 (Jan-07-2026)"
+  },
+  "claim_boundary": "A descriptive post-calibration ramp-stability audit of two usable exposures. It is not a detector nonlinearity calibration, an independent test of the NLIN reference file, or a population-level uncertainty interval."
+}

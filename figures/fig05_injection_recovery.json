@@ -3,7 +3,7 @@
   "data_kind": "synthetic_validation_gate",
   "sample_size": 5,
   "units": "dimensionless",
-  "git_commit": "LOCAL_UNCOMMITTED",
-  "config_sha256": "fabd4b12604f63bf5c4d23e04522710bc4bd89d56eb5229df628fe14eec604c8",
+  "git_commit": "dd4dba6",
+  "config_sha256": "3c56bcebbbad5164cfa369eaa78616dac51429f90ae601d11e9caa54c3bbc8f2",
   "package_version": "0.1.0"
 }
