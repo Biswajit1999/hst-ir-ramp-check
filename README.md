@@ -1,7 +1,5 @@
 # HST WFC3/IR Calibrated Ramp-Stability Audit
 
-![Research maturity: before 47/100, after 94/100](assets/research-maturity-before-after.svg)
-
 This repository asks a deliberately narrow question: after reconstructing accumulated electrons from calibrated WFC3/IR IMA count-rate arrays, is the residual late-versus-early ramp drift stable under declared pixel-selection choices?
 
 ## Scientific correction
@@ -49,7 +47,7 @@ npm run build
 - `data/manifest.csv`: product URLs, retrieval timestamps, byte counts, and SHA-256 receipts.
 - `figures/fig07_selection_robustness.svg`: visual comparison across all declared designs.
 - `docs/ASSUMPTIONS_AND_LIMITATIONS.md`: interpretation boundary and threats to validity.
-- `RESEARCH_QUALITY.md`: before/after research-maturity rubric.
+- `CURATION_STATUS.md`: evidence-completeness and release-readiness record.
 
 ## Author and licence
 
