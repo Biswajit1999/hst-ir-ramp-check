@@ -12,6 +12,8 @@ The same products have `NLINCORR=COMPLETE`. Therefore this analysis is **not a n
 
 The default design compares disjoint early and late weighted slopes for deterministic, separated, DQ-clean single pixels. Two of the three preselected products contain at least six usable positive-time reads; the third is excluded once at exposure level. Across 18 declared designs—20/40 requested pixels, 3/5/7-pixel separation, and 0.4/0.5/0.6 early-read fractions—the pooled median late/early rate change remains negative. The exact values and per-exposure ranges are generated into `results/robustness.json` and displayed without converting this small descriptive sample into a population claim.
 
+The [exposure-aware uncertainty audit](docs/CLUSTERED_UNCERTAINTY.md) contrasts pooled-pixel and equal-exposure bootstrap summaries, publishes per-exposure estimates, tests fluence association, and checks robust-versus-weighted ramp rates without treating 70 pixels as 70 independent exposures.
+
 ## Reproduce
 
 ```powershell
