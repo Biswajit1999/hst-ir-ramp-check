@@ -1,0 +1,25 @@
+{
+  "data_kind": "real public calibrated HST WFC3/IR IMA-derived measurements",
+  "pixel_bootstrap": {
+    "median": -0.01599047577157325,
+    "ci95_low": -0.0345676491147644,
+    "ci95_high": -0.00565358731394655,
+    "draws": 20000,
+    "seed": 20261012
+  },
+  "exposure_balanced_bootstrap": {
+    "n_exposures": 2,
+    "equal_exposure_point": -0.007645031295094374,
+    "ci95_low": -0.028548780470634853,
+    "ci95_high": 0.0820783365356896,
+    "draws": 20000,
+    "seed": 20261012
+  },
+  "diagnostic_associations": {
+    "spearman_drift_vs_fluence": -0.16476248797130608,
+    "spearman_drift_vs_fluence_p": 0.17287724654657255,
+    "median_robust_vs_weighted_rate_fraction": 0.0002695121608722891,
+    "p95_absolute_robust_vs_weighted_rate_fraction": 0.35862501500646043
+  },
+  "limitations": "Only two exposures pass the predeclared read-count gate. Pixel bootstrap intervals assume exchangeable pixels and can understate correlated detector or exposure systematics. The exposure-balanced interval resamples within, not across, the two fixed exposures and is not a population uncertainty."
+}

@@ -14,6 +14,8 @@ data/raw/*
 !/results/measurements.csv
 !/results/robustness.json
 !/results/robustness_designs.csv
+!/results/clustered-uncertainty/
+!/results/clustered-uncertainty/*
 /build/
 /src/*.egg-info/
 web-react/node_modules/
