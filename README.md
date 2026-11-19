@@ -2,6 +2,12 @@
 
 This repository asks a deliberately narrow question: after reconstructing accumulated electrons from calibrated WFC3/IR IMA count-rate arrays, is the residual late-versus-early ramp drift stable under declared pixel-selection choices?
 
+## Research evidence and downloads
+
+[Open the evidence browser file](evidence.html) for 14 selected files, including [`summary.json`](results/summary.json). Each file has a download link and SHA-256 digest. Serve this checkout with `python -m http.server` to view the static browser.
+
+Rebuild the inventory and browser with `python scripts/evidence_catalog.py` and `python scripts/render_evidence_page.py`.
+
 ## Scientific correction
 
 The earlier release interpreted IMA `SCI` arrays as accumulated electrons. The three archived products used here have `BUNIT=ELECTRONS/S` and `UNITCORR=COMPLETE`; fitting those values as charge produced an invalid nonlinearity headline. The repaired loader multiplies `SCI` and `ERR` by the matching `TIME.PIXVALUE` before fitting and fails closed on unknown units.
