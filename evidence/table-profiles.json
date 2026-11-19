@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "project": "HST WFC3/IR Calibrated Ramp-Stability Audit",
+  "tables": [
+    {
+      "path": "data/manifest.csv",
+      "label": "Manifest",
+      "role": "Data and provenance",
+      "rows": 3,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "product_id",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "source",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "source_url",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "retrieved_utc",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "sha256",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "file_size_bytes",
+          "blank": 0,
+          "text": 0,
+          "finite": 3,
+          "nonfinite": 0,
+          "minimum": 2234880.0,
+          "maximum": 168261120.0
+        },
+        {
+          "name": "selection_reason",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "licence_or_terms",
+          "blank": 0,
+          "text": 3,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/example/demo.csv",
+      "label": "Demo",
+      "role": "Data and provenance",
+      "rows": 5,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "x",
+          "blank": 0,
+          "text": 0,
+          "finite": 5,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 4.0
+        },
+        {
+          "name": "value",
+          "blank": 0,
+          "text": 0,
+          "finite": 5,
+          "nonfinite": 0,
+          "minimum": 0.1,
+          "maximum": 0.24
+        },
+        {
+          "name": "uncertainty",
+          "blank": 0,
+          "text": 0,
+          "finite": 5,
+          "nonfinite": 0,
+          "minimum": 0.02,
+          "maximum": 0.04
+        }
+      ]
+    },
+    {
+      "path": "results/clustered-uncertainty/per_exposure_summary.csv",
+      "label": "Per exposure summary",
+      "role": "Tables and numerical results",
+      "rows": 2,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "product_id",
+          "blank": 0,
+          "text": 2,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "n",
+          "blank": 0,
+          "text": 0,
+          "finite": 2,
+          "nonfinite": 0,
+          "minimum": 30.0,
+          "maximum": 40.0
+        },
+        {
+          "name": "median_rate_change",
+          "blank": 0,
+          "text": 0,
+          "finite": 2,
+          "nonfinite": 0,
+          "minimum": -0.02216577067610795,
+          "maximum": 0.0068757080859192
+        },
+        {
+          "name": "median_endpoint_residual",
+          "blank": 0,
+          "text": 0,
+          "finite": 2,
+          "nonfinite": 0,
+          "minimum": -0.0225260464802183,
+          "maximum": 0.0166918705454805
+        },
+        {
+          "name": "median_max_fluence_e",
+          "blank": 0,
+          "text": 0,
+          "finite": 2,
+          "nonfinite": 0,
+          "minimum": 15921.452748483029,
+          "maximum": 75284.2203827675
+        }
+      ]
+    }
+  ],
+  "excluded": []
+}
