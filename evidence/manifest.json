@@ -1,0 +1,288 @@
+{
+  "schema": 1,
+  "project": "HST WFC3/IR Calibrated Ramp-Stability Audit",
+  "repository": "https://github.com/Biswajit1999/hst-ir-ramp-check",
+  "files": [
+    {
+      "label": "Provenance",
+      "path": "data/provenance.yml",
+      "role": "Data and provenance",
+      "bytes": 582,
+      "sha256": "e4f3f31d6d0be784d7e506cbe09c7cb71ac2f4cba66aefc41bdbdb6dde6dcf29",
+      "hash_basis": "LF-normalised text",
+      "format": "YML"
+    },
+    {
+      "label": "Manifest",
+      "path": "data/manifest.csv",
+      "role": "Data and provenance",
+      "bytes": 1604,
+      "sha256": "479a9f1fe0a27fbffd9baca6be5d121bcfb69a33c1259dd7fb3fe08e272ec0e5",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 3,
+      "columns": 8,
+      "headers": [
+        "product_id",
+        "source",
+        "source_url",
+        "retrieved_utc",
+        "sha256",
+        "file_size_bytes",
+        "selection_reason"
+      ],
+      "preview": [
+        [
+          "ibft16req_ima",
+          "MAST/HST",
+          "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:HST/product/ibft16req_ima.fits",
+          "2026-09-25T08:05:00Z",
+          "dbf554ab3b226d33d33980454f5b6f56547d77a87a656ddf5b314f7d98e8cb51",
+          "105171840",
+          "deterministic first-3 public WFC3/IR F160W GALAXY exposure sample, sorted by obs_id; current CALWF3 3.7.3 product dated 2026-06-05"
+        ],
+        [
+          "icnn06srq_ima",
+          "MAST/HST",
+          "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:HST/product/icnn06srq_ima.fits",
+          "2026-09-25T08:05:00Z",
+          "0b5cb40e6f7d56b10cdcb583ec83ad92859ad8510e71b7899eb7551658717e31",
+          "2234880",
+          "deterministic first-3 public WFC3/IR F160W GALAXY exposure sample, sorted by obs_id; current CALWF3 3.7.3 product dated 2026-06-02"
+        ],
+        [
+          "icp910qoq_ima",
+          "MAST/HST",
+          "https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:HST/product/icp910qoq_ima.fits",
+          "2026-09-25T08:05:00Z",
+          "e82be4d3d7315e07873d734890eca37ab675a614877b98cf3287d57617f8bf86",
+          "168261120",
+          "deterministic first-3 public WFC3/IR F160W GALAXY exposure sample, sorted by obs_id; current CALWF3 3.7.3 product dated 2026-06-02"
+        ]
+      ]
+    },
+    {
+      "label": "Research reference",
+      "path": "data/research-reference.json",
+      "role": "Data and provenance",
+      "bytes": 704,
+      "sha256": "969be7313df25858d0b893d52089994d104dff1a888e37b62f1746ffe38f3ac3",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "title",
+        "description",
+        "equations",
+        "references",
+        "anchors"
+      ],
+      "arrays": {
+        "equations": 3,
+        "references": 1,
+        "anchors": 3
+      }
+    },
+    {
+      "label": "Demo",
+      "path": "data/example/demo.csv",
+      "role": "Data and provenance",
+      "bytes": 80,
+      "sha256": "2231cd2f44a7854fefcb8da60f527333a903c9c7a75fbd9154fdde13de699305",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 5,
+      "columns": 3,
+      "headers": [
+        "x",
+        "value",
+        "uncertainty"
+      ],
+      "preview": [
+        [
+          "0",
+          "0.10",
+          "0.02"
+        ],
+        [
+          "1",
+          "0.18",
+          "0.03"
+        ],
+        [
+          "2",
+          "0.14",
+          "0.02"
+        ],
+        [
+          "3",
+          "0.24",
+          "0.04"
+        ]
+      ]
+    },
+    {
+      "label": "Summary",
+      "path": "results/summary.json",
+      "role": "Tables and numerical results",
+      "bytes": 5685,
+      "sha256": "2723e584e8a3221eb534d56079230d6501780e064b0b10cad25b5aed0be2ad80",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "project",
+        "data_kind",
+        "metrics",
+        "provenance",
+        "warnings"
+      ],
+      "arrays": {
+        "metrics": 16,
+        "warnings": 17
+      }
+    },
+    {
+      "label": "Per exposure summary",
+      "path": "results/clustered-uncertainty/per_exposure_summary.csv",
+      "role": "Tables and numerical results",
+      "bytes": 227,
+      "sha256": "74b16fb875890eb6eea82dd8733f31d1008e5529bf000c0669ba1d93f2a9c634",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 2,
+      "columns": 5,
+      "headers": [
+        "product_id",
+        "n",
+        "median_rate_change",
+        "median_endpoint_residual",
+        "median_max_fluence_e"
+      ],
+      "preview": [
+        [
+          "ibft16req_ima",
+          "40",
+          "-0.02216577067610795",
+          "-0.0225260464802183",
+          "75284.2203827675"
+        ],
+        [
+          "icp910qoq_ima",
+          "30",
+          "0.0068757080859192",
+          "0.0166918705454805",
+          "15921.452748483029"
+        ]
+      ]
+    },
+    {
+      "label": "Summary",
+      "path": "results/clustered-uncertainty/summary.json",
+      "role": "Tables and numerical results",
+      "bytes": 1097,
+      "sha256": "f1727598c45eb1d9f5b6baefb28bf57f4f4d2f66bfae6047b46bc5ac94bb1d9e",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "data_kind",
+        "pixel_bootstrap",
+        "exposure_balanced_bootstrap",
+        "diagnostic_associations",
+        "limitations"
+      ],
+      "arrays": {}
+    },
+    {
+      "label": "Fig05 injection recovery",
+      "path": "figures/fig05_injection_recovery.json",
+      "role": "Tables and numerical results",
+      "bytes": 278,
+      "sha256": "f2ca2d4f9f5bccee257a97e8a8a26b20f0c0b1a1a0ca4dac58d9dcf444310487",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "figure",
+        "data_kind",
+        "sample_size",
+        "units",
+        "git_commit",
+        "config_sha256",
+        "package_version"
+      ],
+      "arrays": {}
+    },
+    {
+      "label": "Fig01 example ramp",
+      "path": "figures/fig01_example_ramp.json",
+      "role": "Tables and numerical results",
+      "bytes": 302,
+      "sha256": "080296066da1420b4532fcd4f97aa1311b691304720a952471d8aabeb47f48be",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "figure",
+        "data_kind",
+        "sample_size",
+        "units",
+        "git_commit",
+        "config_sha256",
+        "package_version"
+      ],
+      "arrays": {}
+    },
+    {
+      "label": "Fig02 residual vs fluence",
+      "path": "figures/fig02_residual_vs_fluence.json",
+      "role": "Tables and numerical results",
+      "bytes": 298,
+      "sha256": "5b0a1b45716f548841d476051dc8d4078daf02d5d216164c3ea47d07cce83d47",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "figure",
+        "data_kind",
+        "sample_size",
+        "units",
+        "git_commit",
+        "config_sha256",
+        "package_version"
+      ],
+      "arrays": {}
+    },
+    {
+      "label": "Fig05 injection recovery",
+      "path": "figures/fig05_injection_recovery.png",
+      "role": "Figures",
+      "bytes": 111259,
+      "sha256": "3e209c3b5023681d6d8bebbdaf2b7890e5815682656d2d9936a8a6ac1cd8a5d7",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    },
+    {
+      "label": "Fig00 smoke test",
+      "path": "figures/fig00_smoke_test.png",
+      "role": "Figures",
+      "bytes": 145931,
+      "sha256": "6e104c3cdba1becfbf60a54e0703f2bdf3517d73746068d6e54045eff7680253",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    },
+    {
+      "label": "Fig01 example ramp",
+      "path": "figures/fig01_example_ramp.png",
+      "role": "Figures",
+      "bytes": 135785,
+      "sha256": "9602aa3d4dca1859e641f230129473ae6b4c56063430446c90e90f036562061b",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    },
+    {
+      "label": "Fig02 residual vs fluence",
+      "path": "figures/fig02_residual_vs_fluence.png",
+      "role": "Figures",
+      "bytes": 102379,
+      "sha256": "28ca019a80596e581f97a864c43efa9ef6272dc02661f6ed1ec8be7bb9b59021",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    }
+  ]
+}

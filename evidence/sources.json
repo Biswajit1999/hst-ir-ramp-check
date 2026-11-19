@@ -1,0 +1,76 @@
+{
+  "project": "HST WFC3/IR Calibrated Ramp-Stability Audit",
+  "repository": "https://github.com/Biswajit1999/hst-ir-ramp-check",
+  "files": [
+    {
+      "label": "Provenance",
+      "path": "data/provenance.yml",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Manifest",
+      "path": "data/manifest.csv",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Research reference",
+      "path": "data/research-reference.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Demo",
+      "path": "data/example/demo.csv",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Summary",
+      "path": "results/summary.json",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Per exposure summary",
+      "path": "results/clustered-uncertainty/per_exposure_summary.csv",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Summary",
+      "path": "results/clustered-uncertainty/summary.json",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Fig05 injection recovery",
+      "path": "figures/fig05_injection_recovery.json",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Fig01 example ramp",
+      "path": "figures/fig01_example_ramp.json",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Fig02 residual vs fluence",
+      "path": "figures/fig02_residual_vs_fluence.json",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Fig05 injection recovery",
+      "path": "figures/fig05_injection_recovery.png",
+      "role": "Figures"
+    },
+    {
+      "label": "Fig00 smoke test",
+      "path": "figures/fig00_smoke_test.png",
+      "role": "Figures"
+    },
+    {
+      "label": "Fig01 example ramp",
+      "path": "figures/fig01_example_ramp.png",
+      "role": "Figures"
+    },
+    {
+      "label": "Fig02 residual vs fluence",
+      "path": "figures/fig02_residual_vs_fluence.png",
+      "role": "Figures"
+    }
+  ]
+}
